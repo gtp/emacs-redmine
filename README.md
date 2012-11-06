@@ -11,7 +11,7 @@ using redmine, and easy to tweak to your specific preferences, albeit
 some lisp and/or python required for customisation.
 
 Also I use the redmine-backlogs plugin, so where this document uses
-the word 'sprint', it refers to redmine-backlogs meaning of the word.
+the word 'sprint', it refers to the redmine-backlogs meaning of the word.
 
 Acknowledgements
 ----------------
@@ -22,8 +22,9 @@ The redmine api is from http://code.google.com/p/pyredminews with some changes.
 Install
 -------
 git clone this repo and then add to .emacs file like this:
-  (add-to-list 'load-path "path/to/emacs-redmine")
-  (require 'redmine)
+
+    (add-to-list 'load-path "path/to/emacs-redmine")
+    (require 'redmine)
 
 Then add one or more functions to .emacs for each project you want to access, for example:
 
@@ -36,10 +37,11 @@ Then add one or more functions to .emacs for each project you want to access, fo
       (redmine-show-sprints))
 
 where:
-  redmine-program : this is the redmine.py file inside this git repo
-  redmine-project-name : the name of the redmine project to manage
-  redmine-url : the url of the redmine login page
-  redmine-login-key : your personal login key, which you get from redmine itself on the accounts tag. If you can't see it, then the redmine admin needs to enable API access for the project.
+
+      redmine-program : this is the redmine.py file inside this git repo
+      redmine-project-name : the name of the redmine project to manage
+      redmine-url : the url of the redmine login page
+      redmine-login-key : your personal login key, which you get from redmine itself on the accounts tag. If you can't see it, then the redmine admin needs to enable API access for the project.
 
 Configuration
 -------------
@@ -49,11 +51,12 @@ trackers, edit the settings.py file to change them.
 Usage
 -----
 run your command, eg
+
   M-x redmine-my-project
 
 You will see a list of sprints (at the moment you need to create sprints on the redmine frontend), for example:
 
-     Sprints for us:
+     Sprints for my-project:
      (press 'r' to show issues for the sprint, 'o' to show sprint in org mode )
 
 
@@ -101,6 +104,7 @@ Todo
 - ability to move issues up and down in priority (specifically for use with redmine-backlogs)
 - detection of available issue states instead of hard-coded
 - better support for editing multi-line issue descriptions
+- display and editing story points
 - org-mode integration
 
 Code style disclaimer
