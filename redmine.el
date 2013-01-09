@@ -72,6 +72,14 @@
       (redmine-call-process "issues" (concat "--sprint " redmine-sprint-id) "pop")
       (error "Sprint id not found"))))
 
+(defun redmine-show-issues-in-sprint-page2 ()
+  (interactive)
+  (let ((sprint-id nil))
+    (setq redmine-sprint-id (redmine-get-sprint-id))
+    (if redmine-sprint-id
+      (redmine-call-process "issues" (concat "--sprint " redmine-sprint-id " --page 2") "pop")
+      (error "Sprint id not found"))))
+
 (defun redmine-show-issue ()
   (interactive)
   (let ((issue-id nil))
@@ -424,6 +432,7 @@
 (define-key redmine-mode-map "o"    'redmine-everything-sprint)
 (define-key redmine-mode-map "t"    'redmine-timesheet-sprint)
 (define-key redmine-mode-map "r"    'redmine-show-issues-in-sprint)
+(define-key redmine-mode-map "2"    'redmine-show-issues-in-sprint-page2)
 (define-key redmine-mode-map "s"    'redmine-show-issue)
 ;; (define-key redmine-mode-map "E"    'redmine-edit)
 ;; (define-key redmine-mode-map "s"    'redmine-show)
@@ -518,6 +527,13 @@
      (:foreground "seashell4" :slant italic)))
   "Face definition for the text of closed issues")
 
+(defface redmine-issue-tested-name-face
+  '((((class color) (background light))
+     (:foreground "dark green" :slant italic))
+    (((class color) (background dark))
+     (:foreground "pale green" :slant italic)))
+  "Face definition for the text of tested issues")
+
 (defface redmine-issue-open-name-face
   '((((class color) (background light))
      (:foreground "coral"))
@@ -550,19 +566,23 @@
 (defvar redmine-issue-text-open-name-face 'redmine-issue-text-open-name-face)
 (defvar redmine-feature-issue-open-name-face 'redmine-feature-issue-open-name-face)
 (defvar redmine-issue-text-closed-name-face 'redmine-issue-text-closed-name-face)
+(defvar redmine-issue-tested-name-face 'redmine-issue-tested-name-face)
+
 (defvar redmine-font-lock-keywords
   '(
-    ("^.*:\\(.*\\):.*$" (1 redmine-release-open-name-face t))
-    ("\\((New).*\\)" (1 redmine-issue-open-name-face t))
-    ("\\((Reopened).*\\)" (1 redmine-issue-open-name-face t))
-    ("\\((Dev done).*\\)" (1 redmine-issue-closed-name-face t))
-    ("\\((closed).*\\)" (1 redmine-release-closed-name-face t))
-    ("\\((open).*\\)" (1 redmine-release-open-name-face t))
-    ("\\((Tested).*\\)" (1 redmine-issue-closed-name-face t))
+    ;;("^.*:\\([^:]*\\):.*$" (1 redmine-release-open-name-face t))
+    ("\\(.*(New).*\\)" (1 redmine-issue-open-name-face t))
+    ("\\(.*(Reopened).*\\)" (1 redmine-issue-open-name-face t))
+    ("\\(.*(Dev done).*\\)" (1 redmine-issue-closed-name-face t))
+    ("\\(.*(closed).*\\)" (1 redmine-release-closed-name-face t))
+    ("\\(.*(Config Required).*\\)" (1 redmine-release-closed-name-face t))
+    ("\\(.*(Help Reproduce).*\\)" (1 redmine-release-closed-name-face t))
+    ("\\(.*(Duplicate).*\\)" (1 redmine-issue-tested-name-face t))
+    ("\\(.*(open).*\\)" (1 redmine-release-open-name-face t))
+    ("\\(.*(Tested).*\\)" (1 redmine-issue-tested-name-face t))
     ("^\\(Subject:.*\\)$" (1 redmine-issue-detail t))
     ("\\(Status: New.*\\)" (1 redmine-issue-open-name-face t))
-    ("\\(Status: Dev done.*\\)" (1 redmine-issue-closed-name-face t))
-))
+))  
 
 ;; Redmine major mode
 (define-derived-mode redmine-mode fundamental-mode "Redmine"

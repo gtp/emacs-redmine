@@ -8,6 +8,7 @@ Issues:
 ---------------------------
 Shortcut Keys:
   g : refresh
+  2 : view page 2 (if there are more than 100 issues)
   s : show issue information
   A : add new issue
   e : edit issue

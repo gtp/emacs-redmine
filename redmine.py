@@ -28,7 +28,7 @@ class Org():
         
         for sprint in sprints:
             sprint.issues = self.redmine.findIssues(get_all_info=True, project_id=args.redmine_project, include='journals', sort="position",
-                                                    tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint.id, status_id='*', limit=300)
+                                                    tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint.id, status_id='*', limit=900)
 
             for issue in sprint.issues:
                 tasks = []
@@ -48,7 +48,7 @@ class Org():
                 break
 
         sprint.issues = self.redmine.findIssues(get_all_info=True, project_id=args.redmine_project, include='journals',  sort="position",
-                                         tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint.id, status_id='*', limit=300)
+                                         tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint.id, status_id='*', limit=900)
 
         for issue in sprint.issues:
             tasks = []
@@ -73,14 +73,16 @@ class Org():
         print("\nWritten to %s\n\n" % filename)
         print(timesheet_content)
 
-    def issues(self, sprint):
+    def issues(self, sprint, page=1):
         """get_all_info=True is much slower since it makes an
         additional api call for each issue, only use it if you want
         each issue in full."""
+        issues_per_page=100
+        offset = issues_per_page * (page-1)
         if sprint is None:
             raise Exception("sprint must be specified")
         issues = self.redmine.findIssues(get_all_info=False, project_id=args.redmine_project, include='journals',  sort="position",
-                                         tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint, status_id='*', limit=300)
+                                         tracker_id=settings.TRACKER_SPRINT, fixed_version_id=sprint, status_id='*', limit=issues_per_page, offset=offset)
         print self._process_template("issues.org", sprint=sprint, issues=issues)
 
     def issue(self, issue_id):
@@ -212,6 +214,8 @@ if __name__ == "__main__":
                         help='''What to do, one of: issues issue new-issue set-issue-status versions (and probably more)''')
     parser.add_argument('--sprint', dest='sprint', type=str, required=False, default=None,
                         help='The sprint id, used for some actions')
+    parser.add_argument('--page', dest='page', type=int, required=False, default=1,
+                        help='The page number, used when viewing issues in a sprint')
     parser.add_argument('--issue', dest='issue', type=str, required=False, default=None,
                         help='The issue id, used for some actions')
     parser.add_argument('--status', dest='status', type=str, required=False, default=None,
@@ -223,7 +227,7 @@ if __name__ == "__main__":
     org = Org(redmine, args)
 
     if args.action == "issues":
-        org.issues(args.sprint)
+        org.issues(args.sprint, args.page)
     elif args.action == "everything":
         org.everything(args.redmine_project)
     elif args.action == "everything-sprint":
